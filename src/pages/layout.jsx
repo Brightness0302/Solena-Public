@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import Swap from "../icons/swap";
 import Stake from "../icons/stake";
@@ -36,14 +36,14 @@ function Layout() {
           <div className="flex flex-row justify-start gap-1 items-center">
             <NavLink
               className="nav-text"
-              to={"/"}
+              to={"/swap"}
               style={({ isActive }) => {
                 return isActive
                   ? {
-                      background:
-                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                      borderBottom: "2px solid #3CD2B5",
-                    }
+                    background:
+                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                    borderBottom: "2px solid #3CD2B5",
+                  }
                   : {};
               }}
             >
@@ -55,10 +55,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                      background:
-                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                      borderBottom: "2px solid #3CD2B5",
-                    }
+                    background:
+                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                    borderBottom: "2px solid #3CD2B5",
+                  }
                   : {};
               }}
             >
@@ -70,10 +70,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                      background:
-                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                      borderBottom: "2px solid #3CD2B5",
-                    }
+                    background:
+                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                    borderBottom: "2px solid #3CD2B5",
+                  }
                   : {};
               }}
             >
@@ -85,10 +85,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                      background:
-                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                      borderBottom: "2px solid #3CD2B5",
-                    }
+                    background:
+                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                    borderBottom: "2px solid #3CD2B5",
+                  }
                   : {};
               }}
             >
@@ -118,13 +118,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                    stroke: "#ECFDFF",
-                    color: "#ECFDFF",
-                  }
+                  stroke: "#ECFDFF",
+                  color: "#ECFDFF",
+                }
                 : {
-                    stroke: "#7979AC",
-                    color: "#7979AC",
-                  };
+                  stroke: "#7979AC",
+                  color: "#7979AC",
+                };
             }}
           >
             <Swap width={16} height={15} />
@@ -136,13 +136,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                    stroke: "#ECFDFF",
-                    color: "#ECFDFF",
-                  }
+                  stroke: "#ECFDFF",
+                  color: "#ECFDFF",
+                }
                 : {
-                    stroke: "#7979AC",
-                    color: "#7979AC",
-                  };
+                  stroke: "#7979AC",
+                  color: "#7979AC",
+                };
             }}
           >
             <Stake width={16} height={18} />
@@ -154,13 +154,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                    stroke: "#ECFDFF",
-                    color: "#ECFDFF",
-                  }
+                  stroke: "#ECFDFF",
+                  color: "#ECFDFF",
+                }
                 : {
-                    stroke: "#7979AC",
-                    color: "#7979AC",
-                  };
+                  stroke: "#7979AC",
+                  color: "#7979AC",
+                };
             }}
           >
             <Farm width={16} height={16} />
@@ -172,13 +172,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                    stroke: "#ECFDFF",
-                    color: "#ECFDFF",
-                  }
+                  stroke: "#ECFDFF",
+                  color: "#ECFDFF",
+                }
                 : {
-                    stroke: "#7979AC",
-                    color: "#7979AC",
-                  };
+                  stroke: "#7979AC",
+                  color: "#7979AC",
+                };
             }}
           >
             <Launchpad width={10} height={19} />

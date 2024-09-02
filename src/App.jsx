@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   ConnectionProvider,
@@ -18,8 +18,7 @@ import Stake from "./pages/stake";
 import { ToastContainer } from "react-toastify";
 // context
 import LoadingProvider from "./context/loadingContext/provider";
-import CustomWalletProvider from "./context/walletContext/provider";
-//
+
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 // styles
@@ -29,6 +28,7 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 
 import "react-toastify/dist/ReactToastify.css";
 import ProgramProvider from "./context/programContext/provider";
+import { Swap } from "./pages/swap";
 
 const App = () => {
   const theme = useTheme();
@@ -41,12 +41,13 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<Layout />}>
-                <Route exact index element={<Home />} />
+                <Route exact index element={<Swap />} />
                 <Route
                   path="stake/sol"
                   element={downMd ? <Stake /> : <Home />}
                 />
                 <Route path="stake" element={<Home />} />
+                <Route path="swap" element={<Swap />} />
                 <Route path="farm" element={<Home />} />
                 <Route path="launchpad" element={<Home />} />
               </Route>

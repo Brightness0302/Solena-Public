@@ -78,7 +78,15 @@ body {
   background-clip: content-box, border-box;
   transition: all 0.5s ease;
 }
-
+.gradient_btn {
+  border: double 2px transparent;
+  border-radius: 24px;
+  background-image: linear-gradient(#1b1b36, #1b1b36),
+    linear-gradient(to right, #5f78ff, #47c4c3);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  transition: all 0.5s ease;
+}
 .connect-wallet:hover {
   background-image: linear-gradient(to right, #5f78ff, #47c4c3);
 }
