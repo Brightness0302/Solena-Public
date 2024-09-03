@@ -1,5 +1,5 @@
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import React, { useContext, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { AnchorProvider, BN, Program } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from "@solana/spl-token";
@@ -251,15 +251,13 @@ export default function Stake() {
             <span
               className={`bg-white rounded-lg w-[100px] h-6 mt-1 mb-5 absolute transform -translate-x-1/2 flex justify-center items-center durationBackground`}
               style={{
-                left: `calc(${
-                  (100 / (durationRange.length - 1)) * duration
-                }% + ${
-                  duration == 0
+                left: `calc(${(100 / (durationRange.length - 1)) * duration
+                  }% + ${duration == 0
                     ? 40
                     : duration == durationRange.length - 1
-                    ? -40
-                    : 0
-                }px)`,
+                      ? -40
+                      : 0
+                  }px)`,
               }}
             >
               <span className="text-black text-center text-xs font-bold">

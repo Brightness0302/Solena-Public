@@ -50,23 +50,21 @@ export default function FixedStakingComponent({ setShowModal }) {
   };
 
   return (
-    <div className="flex flex-col gap-8 px-5 sm:px-16 py-8 w-full z-10">
+    <div className=" h-screen flex flex-col gap-8 px-5 sm:px-16 py-8 w-full z-10">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-8 sm:gap-10">
         <p className="text-[50px] font-bold">Fixed Staking</p>
         <div className="flex flex-row justify-between items-center gap-10 flex-grow">
           <div className="flex flex-row justify-start items-center gap-5">
             <button
-              className={`${
-                type ? "typeActive" : "typeDeactive"
-              } rounded-full px-4 py-2 text-xs font-semibold`}
+              className={`${type ? "typeActive" : "typeDeactive"
+                } rounded-full px-4 py-2 text-xs font-semibold`}
               onClick={() => setType(true)}
             >
               Active
             </button>
             <button
-              className={`${
-                !type ? "typeActive" : "typeDeactive"
-              } rounded-full px-4 py-2 text-xs font-semibold`}
+              className={`${!type ? "typeActive" : "typeDeactive"
+                } rounded-full px-4 py-2 text-xs font-semibold`}
               onClick={() => setType(false)}
             >
               Ended
@@ -93,13 +91,13 @@ export default function FixedStakingComponent({ setShowModal }) {
           </div>
         </div>
       </div>
-      <div className="flex flex-col md:flex-row justify-start gap-8">
+      {/* <div className="flex flex-col md:flex-row justify-start gap-8">
         <Stake />
         <div className="grid grid-cols-1 2xl:grid-cols-2 gap-3 flex-grow">
           {renderHarvestContainers()}
         </div>
-      </div>
-      <div className="flex justify-center">
+      </div> */}
+      {/* <div className="flex justify-center">
         <button
           className="px-10 py-3 border border-[#7979AC] flex flex-row gap-3 rounded-full"
           onClick={() => onReload()}
@@ -112,7 +110,7 @@ export default function FixedStakingComponent({ setShowModal }) {
           />
           Reload
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -200,7 +200,7 @@ export const Home = () => {
   return (
     <>
       <div className="relative flex flex-row justify-between items-center solana-logo h-[210px] sm:h-[200px] gap-24 w-full">
-        <div className="flex flex-col px-5 sm:px-24 z-10">
+        <div className="flex flex-col px-5 sm:px-16 z-10">
           <p className="text-[50px] font-bold">Solena Stake</p>
           <span className="text-lg font-medium text-[#7979AC]">
             An easy, secure, fast, and user-friendly exchange for all your
