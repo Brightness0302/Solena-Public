@@ -1,6 +1,10 @@
 import Chart from "react-apexcharts";
+import { useToken } from "../../context/tokenContext/provider";
 
 const SwapChart = () => {
+  const { currentSendToken, currentRecieveToken } = useToken();
+
+
   const time = [
     {
       value: "24h",
@@ -316,15 +320,15 @@ const SwapChart = () => {
 
   return (
     <div className="py-6 w-full relative">
-      <div>
+      <div className="mb-7">
         <div className="text-primary text-base font-medium">+0.03%</div>
         <div className="flex justify-between items-center gap-6 w-full ">
           <div className="flex items-center gap-2 mt-1">
             <div className="font-bold text-5xl text-white">$193.729</div>
             <div className="flex items-center gap-2">
-              <img src="/images/icons/sol.svg" alt="icon" />
-              <img src="/images/icons/usdt.svg" alt="icon" />
-              <div className="font-semibold text-base">USDC/SOL</div>
+              <img src={currentSendToken.logoURI} className="w-6" alt="icon" />
+              <img src={currentRecieveToken.logoURI} className="w-6" alt="icon" />
+              <div className="font-semibold text-base">{currentSendToken.symbol}/{currentRecieveToken.symbol}</div>
             </div>
           </div>
           <div className="flex items-center gap-2 ">
@@ -334,7 +338,7 @@ const SwapChart = () => {
                 className={
                   data.status
                     ? ` shadow-gradient   font-semibold text-xs bg-gradient-to-r from-gradient-start to-gradient-end text-black rounded-3xl h-10 w-16 text-center flex items-center justify-center`
-                    : `border font-semibold text-xs border-tertiary text-tertiary rounded-3xl h-10 w-16 text-center flex items-center justify-center`
+                    : `border font-semibold text-xs border-border text-tertiary rounded-3xl h-10 w-16 text-center flex items-center justify-center`
                 }
               >
                 {data.value}
@@ -351,7 +355,7 @@ const SwapChart = () => {
         series={series}
         type="candlestick"
         height={500}
-        width={"100%"}
+
       />
     </div>
   );

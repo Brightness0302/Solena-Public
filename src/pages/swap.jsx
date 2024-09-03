@@ -1,4 +1,5 @@
 import SwapChart from "../components/charts/swapChart";
+import SwapComponent from "../components/swap";
 
 export const Swap = () => {
   return (
@@ -23,13 +24,13 @@ export const Swap = () => {
         </div>
       </div>
 
-      <div className="h-screen z-10 px-5 sm:px-16 ">
-        <div className="grid md:grid-cols-2 grid-cols-1">
-          <div className=" w-full">
+      <div className="h-screen px-5 sm:px-16 ">
+        <div className="grid grid-cols-12 w-full  gap-6">
+          <div className=" col-span-7">
             <SwapChart />
           </div>
-          <div className="h-full flex justify-center items-center text-center">
-            <div className="text-2xl font-bold">Swap</div>
+          <div className="col-span-3/5 w-full ">
+            <SwapComponent />
           </div>
         </div>
       </div>

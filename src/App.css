@@ -94,7 +94,17 @@ body {
 .toggle ~ .dot {
   background: linear-gradient(to right, #3ed3b5, #5f78ff);
 }
+.custom_container {
+  z-index: 20 !important;
+}
+#container {
+  position: absolute;
+  z-index: 10000;
+}
 
+.custom-dropdown {
+  z-index: 999999 !important;
+}
 .toggle:checked ~ .dot {
   transform: translateX(100%);
   background: linear-gradient(to right, #3ed3b5, #5f78ff);
@@ -200,13 +210,27 @@ body {
   transform: rotate(180deg);
   transition: transform 0.5s linear;
 }
+.connect-wallet {
+  width: 180px;
+  height: 60px;
+  border: double 2px transparent;
+  border-radius: 24px;
+  background-image: linear-gradient(#1b1b36, #1b1b36),
+    linear-gradient(to right, #5f78ff, #47c4c3);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  transition: all 0.5s ease;
+}
 
 .wallet-adapter-button.wallet-adapter-button-trigger {
-  @apply text-black;
-  background: linear-gradient(275.37deg, #3ed3b5 0%, #5f78ff 50%, #3ed3b5 100%);
-  box-shadow: 0 8px 16px 0 #3ed3b533, 0 6px 20px 0 #5f78ff33;
+  border: solid 2px #5d7ffa !important;
+  border-radius: 24px;
+  background-color: #1c2442;
+  transition: all 0.5s ease;
   background-size: 200% 100%;
+  box-shadow: 0 !important;
   background-position: 100% 0;
+  color: #ffffff !important;
 }
 
 .wallet-adapter-dropdown {
@@ -214,5 +238,9 @@ body {
 }
 
 .wallet-adapter-button.wallet-adapter-button-trigger:hover {
+  color: #ffffff;
   animation: gradientAnimation 2s ease infinite;
+  border: solid 0px #5d7ffa !important;
+  background: linear-gradient(275.37deg, #3ed3b5 0%, #5f78ff 50%, #3ed3b5 100%);
+  box-shadow: 0 8px 16px 0 #3ed3b533, 0 6px 20px 0 #5f78ff33;
 }
