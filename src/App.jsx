@@ -29,6 +29,7 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 import "react-toastify/dist/ReactToastify.css";
 import ProgramProvider from "./context/programContext/provider";
 import { Swap } from "./pages/swap";
+import { TokenProvider } from "./context/tokenContext/provider";
 
 const App = () => {
   const theme = useTheme();
@@ -82,7 +83,9 @@ const Context = ({ children }) => {
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
-        <WalletModalProvider>{children}</WalletModalProvider>
+        <WalletModalProvider>
+          <TokenProvider>{children}</TokenProvider>
+        </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
