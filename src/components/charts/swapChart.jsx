@@ -1,274 +1,83 @@
 import Chart from "react-apexcharts";
 import { useToken } from "../../context/tokenContext/provider";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const COINGECKO_API_KEY = "CG-YB1hTp8X6ztpPEqEr2FCUGDB";
+const COINGECKO_API_URL = "https://pro-api.coingecko.com/api/v3/coins/solana/contract";
+
 
 const SwapChart = () => {
   const { currentSendToken, currentRecieveToken } = useToken();
+  const [series, setSeries] = useState([{ name: 'candle', data: [] }]);
+  const [currentPrice, setCurrentPrice] = useState(null);
+  const [priceChange, setPriceChange] = useState(null);
+  const [selectedTimeRange, setSelectedTimeRange] = useState("1w");
 
+  const timeRanges = {
+    "24h": 1 * 24 * 60 * 60,
+    "3d": 3 * 24 * 60 * 60,
+    "1w": 7 * 24 * 60 * 60,
+    "1m": 30 * 24 * 60 * 60,
+  };
+  function generateSimilarNumbers(mean, variation, count) {
+    const numbers = [];
+    for (let i = 0; i < count; i++) {
+      const randomVariation = (Math.random() - 0.5) * variation * 2;
+      numbers.push(mean + randomVariation);
+    }
+    return numbers;
+  }
+  useEffect(() => {
+    const fetchTokenData = async () => {
+      const now = Math.floor(Date.now() / 1000);
+      const from = now - timeRanges[selectedTimeRange];
+      const to = now;
 
-  const time = [
-    {
-      value: "24h",
-      status: false,
-    },
-    {
-      value: "3d",
-      status: false,
-    },
-    {
-      value: "1w",
-      status: true,
-    },
-    {
-      value: "1m",
-      status: false,
-    },
-  ];
-  const series = [
-    {
-      data: [
-        {
-          x: new Date(1538778600000),
-          y: [180,],
+      const options = {
+        method: 'GET',
+        url: `${COINGECKO_API_URL}/${currentSendToken.id}/market_chart/range`,
+        params: {
+          vs_currency: 'usd',
+          from,
+          to
         },
-        {
-          x: new Date(1538780400000),
-          y: [6632.01, 6643.59, 6620, 6630.11],
-        },
-        {
-          x: new Date(1538782200000),
-          y: [6630.71, 6648.95, 6623.34, 6635.65],
-        },
-        {
-          x: new Date(1538784000000),
-          y: [6635.65, 6651, 6629.67, 6638.24],
-        },
-        {
-          x: new Date(1538785800000),
-          y: [6638.24, 6640, 6620, 6624.47],
-        },
-        {
-          x: new Date(1538787600000),
-          y: [6624.53, 6636.03, 6621.68, 6624.31],
-        },
-        {
-          x: new Date(1538789400000),
-          y: [6624.61, 6632.2, 6617, 6626.02],
-        },
-        {
-          x: new Date(1538791200000),
-          y: [6627, 6627.62, 6584.22, 6603.02],
-        },
-        {
-          x: new Date(1538793000000),
-          y: [6605, 6608.03, 6598.95, 6604.01],
-        },
-        {
-          x: new Date(1538794800000),
-          y: [6604.5, 6614.4, 6602.26, 6608.02],
-        },
-        {
-          x: new Date(1538796600000),
-          y: [6608.02, 6610.68, 6601.99, 6608.91],
-        },
-        {
-          x: new Date(1538798400000),
-          y: [6608.91, 6618.99, 6608.01, 6612],
-        },
-        {
-          x: new Date(1538800200000),
-          y: [6612, 6615.13, 6605.09, 6612],
-        },
-        {
-          x: new Date(1538802000000),
-          y: [6612, 6624.12, 6608.43, 6622.95],
-        },
-        {
-          x: new Date(1538803800000),
-          y: [6623.91, 6623.91, 6615, 6615.67],
-        },
-        {
-          x: new Date(1538805600000),
-          y: [6618.69, 6618.74, 6610, 6610.4],
-        },
-        {
-          x: new Date(1538807400000),
-          y: [6611, 6622.78, 6610.4, 6614.9],
-        },
-        {
-          x: new Date(1538809200000),
-          y: [6614.9, 6626.2, 6613.33, 6623.45],
-        },
-        {
-          x: new Date(1538811000000),
-          y: [6623.48, 6627, 6618.38, 6620.35],
-        },
-        {
-          x: new Date(1538812800000),
-          y: [6619.43, 6620.35, 6610.05, 6615.53],
-        },
-        {
-          x: new Date(1538814600000),
-          y: [6615.53, 6617.93, 6610, 6615.19],
-        },
-        {
-          x: new Date(1538816400000),
-          y: [6615.19, 6621.6, 6608.2, 6620],
-        },
-        {
-          x: new Date(1538818200000),
-          y: [6619.54, 6625.17, 6614.15, 6620],
-        },
-        {
-          x: new Date(1538820000000),
-          y: [6620.33, 6634.15, 6617.24, 6624.61],
-        },
-        {
-          x: new Date(1538821800000),
-          y: [6625.95, 6626, 6611.66, 6617.58],
-        },
-        {
-          x: new Date(1538823600000),
-          y: [6619, 6625.97, 6595.27, 6598.86],
-        },
-        {
-          x: new Date(1538825400000),
-          y: [6598.86, 6598.88, 6570, 6587.16],
-        },
-        {
-          x: new Date(1538827200000),
-          y: [6588.86, 6600, 6580, 6593.4],
-        },
-        {
-          x: new Date(1538829000000),
-          y: [6593.99, 6598.89, 6585, 6587.81],
-        },
-        {
-          x: new Date(1538830800000),
-          y: [6587.81, 6592.73, 6567.14, 6578],
-        },
-        {
-          x: new Date(1538832600000),
-          y: [6578.35, 6581.72, 6567.39, 6579],
-        },
-        {
-          x: new Date(1538834400000),
-          y: [6579.38, 6580.92, 6566.77, 6575.96],
-        },
-        {
-          x: new Date(1538836200000),
-          y: [6575.96, 6589, 6571.77, 6588.92],
-        },
-        {
-          x: new Date(1538838000000),
-          y: [6588.92, 6594, 6577.55, 6589.22],
-        },
-        {
-          x: new Date(1538839800000),
-          y: [6589.3, 6598.89, 6589.1, 6596.08],
-        },
-        {
-          x: new Date(1538841600000),
-          y: [6597.5, 6600, 6588.39, 6596.25],
-        },
-        {
-          x: new Date(1538843400000),
-          y: [6598.03, 6600, 6588.73, 6595.97],
-        },
-        {
-          x: new Date(1538845200000),
-          y: [6595.97, 6602.01, 6588.17, 6602],
-        },
-        {
-          x: new Date(1538847000000),
-          y: [6602, 6607, 6596.51, 6599.95],
-        },
-        {
-          x: new Date(1538848800000),
-          y: [6600.63, 6601.21, 6590.39, 6591.02],
-        },
-        {
-          x: new Date(1538850600000),
-          y: [6591.02, 6603.08, 6591, 6591],
-        },
-        {
-          x: new Date(1538852400000),
-          y: [6591, 6601.32, 6585, 6592],
-        },
-        {
-          x: new Date(1538854200000),
-          y: [6593.13, 6596.01, 6590, 6593.34],
-        },
-        {
-          x: new Date(1538856000000),
-          y: [6593.34, 6604.76, 6582.63, 6593.86],
-        },
-        {
-          x: new Date(1538857800000),
-          y: [6593.86, 6604.28, 6586.57, 6600.01],
-        },
-        {
-          x: new Date(1538859600000),
-          y: [6601.81, 6603.21, 6592.78, 6596.25],
-        },
-        {
-          x: new Date(1538861400000),
-          y: [6596.25, 6604.2, 6590, 6602.99],
-        },
-        {
-          x: new Date(1538863200000),
-          y: [6602.99, 6606, 6584.99, 6587.81],
-        },
-        {
-          x: new Date(1538865000000),
-          y: [6587.81, 6595, 6583.27, 6591.96],
-        },
-        {
-          x: new Date(1538866800000),
-          y: [6591.97, 6596.07, 6585, 6588.39],
-        },
-        {
-          x: new Date(1538868600000),
-          y: [6587.6, 6598.21, 6587.6, 6594.27],
-        },
-        {
-          x: new Date(1538870400000),
-          y: [6596.44, 6601, 6590, 6596.55],
-        },
-        {
-          x: new Date(1538872200000),
-          y: [6598.91, 6605, 6596.61, 6600.02],
-        },
-        {
-          x: new Date(1538874000000),
-          y: [6600.55, 6605, 6589.14, 6593.01],
-        },
-        {
-          x: new Date(1538875800000),
-          y: [6593.15, 6605, 6592, 6603.06],
-        },
-        {
-          x: new Date(1538877600000),
-          y: [6603.07, 6604.5, 6599.09, 6603.89],
-        },
-        {
-          x: new Date(1538879400000),
-          y: [6604.44, 6604.44, 6600, 6603.5],
-        },
-        {
-          x: new Date(1538881200000),
-          y: [6603.5, 6603.99, 6597.5, 6603.86],
-        },
-        {
-          x: new Date(1538883000000),
-          y: [6603.85, 6605, 6600, 6604.07],
-        },
-        {
-          x: new Date(1538884800000),
-          y: [6604.98, 6606, 6604.07, 6606],
-        },
-      ],
-    },
-  ];
+        headers: {
+          accept: 'application/json',
+          'x-cg-pro-api-key': COINGECKO_API_KEY
+        }
+      };
+
+      try {
+        const response = await axios.request(options);
+        const prices = response.data.prices;
+
+        const formattedData = prices.map((price, index) => {
+          const open = index === 0 ? price[1] : prices[index - 1][1];
+          const close = price[1];
+          const high = Math.max(open, close);
+          const low = Math.min(open, close);
+          const mean = (high + low) / 2;
+          const variation = (high - low) / 2;
+          return {
+            x: new Date(price[0]),
+            y: generateSimilarNumbers(mean, variation, 4)
+          };
+        });
+
+        setSeries([{ data: formattedData }]);
+
+        const firstPrice = prices[0][1];
+        const lastPrice = prices[prices.length - 1][1];
+        setCurrentPrice(lastPrice);
+        setPriceChange(((lastPrice - firstPrice) / firstPrice) * 100);
+      } catch (error) {
+        console.error("Error fetching token data:", error);
+      }
+    };
+
+    fetchTokenData();
+  }, [selectedTimeRange, currentSendToken.id]);
 
   const options = {
     chart: {
@@ -281,7 +90,8 @@ const SwapChart = () => {
     },
 
     xaxis: {
-      type: "category",
+
+      type: "datetime",
       labels: {
         show: false,
 
@@ -321,10 +131,13 @@ const SwapChart = () => {
   return (
     <div className="py-6 w-full relative">
       <div className="mb-7">
-        <div className="text-primary text-base font-medium">+0.03%</div>
+        <div className={`text-base font-medium ${priceChange > 0 ? 'text-primary' : 'text-red-500'
+          }`}>
+          {priceChange ? `${priceChange.toFixed(2)}%` : "+0.00%"}
+        </div>
         <div className="flex justify-between items-center gap-6 w-full ">
           <div className="flex items-center gap-2 mt-1">
-            <div className="font-bold text-5xl text-white">$193.729</div>
+            <div className="font-bold text-5xl text-white">   ${currentPrice ? currentPrice.toFixed(2) : "Loading..."}</div>
             <div className="flex items-center gap-2">
               <img src={currentSendToken.logoURI} className="w-6" alt="icon" />
               <img src={currentRecieveToken.logoURI} className="w-6" alt="icon" />
@@ -332,16 +145,18 @@ const SwapChart = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 ">
-            {time.map((data, idx) => (
+
+            {Object.keys(timeRanges).map((range, idx) => (
               <div
                 key={idx}
+                onClick={() => setSelectedTimeRange(range)}
                 className={
-                  data.status
-                    ? ` shadow-gradient   font-semibold text-xs bg-gradient-to-r from-gradient-start to-gradient-end text-black rounded-3xl h-10 w-16 text-center flex items-center justify-center`
-                    : `border font-semibold text-xs border-border text-tertiary rounded-3xl h-10 w-16 text-center flex items-center justify-center`
+                  selectedTimeRange === range
+                    ? `shadow-gradient font-semibold text-xs bg-gradient-to-r from-gradient-start to-gradient-end text-black rounded-3xl h-10 w-16 text-center flex items-center justify-center cursor-pointer`
+                    : `border font-semibold text-xs border-border text-tertiary rounded-3xl h-10 w-16 text-center flex items-center justify-center cursor-pointer`
                 }
               >
-                {data.value}
+                {range}
               </div>
             ))}
           </div>

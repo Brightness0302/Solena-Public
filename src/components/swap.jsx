@@ -1,15 +1,38 @@
-import { useEffect, useState } from "react";
+import { PhantomWalletName } from "@solana/wallet-adapter-phantom";
+import { useCallback, useEffect, useState } from "react";
 import { fetchCoins } from "../services/swap";
 import { useToken } from "../context/tokenContext/provider";
+import axios from "axios";
+import { useWallet } from "@solana/wallet-adapter-react";
+import {
+    WalletConnectionError,
+    WalletNotReadyError,
 
+} from "@solana/wallet-adapter-base";
+import { toastNotify } from "../utils/toast";
+import { Connection } from "@solana/web3.js";
 const SwapComponent = () => {
     const [sendAmount, setSendAmount] = useState(100);
-    const [recieveAmount, setRecieveAmount] = useState(0.51284789);
+    const [recieveAmount, setRecieveAmount] = useState(0);
     const [sendMenu, setSendMenu] = useState(false);
     const [recieveMenu, setRecieveMenu] = useState(false);
     const [tab, setTab] = useState("cheap");
     const { currentSendToken, currentRecieveToken } = useToken();
     const { setCurrentSendToken, setCurrentRecieveToken } = useToken();
+    const [sendTokenPrice, setSendTokenPrice] = useState(1);
+    const [recieveTokenPrice, setRecieveTokenPrice] = useState(1);
+    const [priceImpact, setPriceImpact] = useState(0);
+    const [quoteResponse, setQuoteResponse] = useState(null);
+
+
+    const {
+        select,
+        connect,
+        connecting,
+        connected,
+        publicKey,
+
+    } = useWallet();
 
 
     const [coins, setCoins] = useState([])
@@ -20,15 +43,97 @@ const SwapComponent = () => {
         setTab("fast");
 
     }
-    useEffect(() => {
+    const fetchTokenPrice = async (id) => {
+        const response = await axios.get(
+            `https://price.jup.ag/v6/price?ids=${id}`,
 
+        );
+        console.log("sss", response.data)
+        return response.data.data[id]?.price || 1;
+    };
+
+    // useEffect(() => {
+    //     getQuote(sendAmount);
+    // }, [sendAmount]);
+
+    useEffect(() => {
         const getCoins = async () => {
             const data = await fetchCoins();
             setCoins(data);
+        };
+        getCoins();
+    }, []);
+    useEffect(() => {
+        if (sendAmount && sendTokenPrice && recieveTokenPrice) {
+            const calculatedReceiveAmount = (sendAmount * sendTokenPrice) / recieveTokenPrice;
+            // setRecieveAmount(calculatedReceiveAmount);
+            const expectedPrice = sendTokenPrice / recieveTokenPrice;
+            const actualPrice = calculatedReceiveAmount / sendAmount;
+            const impact = ((expectedPrice - actualPrice) / expectedPrice) * 100;
+
+            setPriceImpact(impact);
+        }
+    }, [sendAmount, sendTokenPrice, recieveTokenPrice]);
+    useEffect(() => {
+        const updatePrices = async () => {
+            const sendPrice = await fetchTokenPrice(currentSendToken.id);
+            const recievePrice = await fetchTokenPrice(currentRecieveToken.id);
+            setSendTokenPrice(sendPrice);
+            setRecieveTokenPrice(recievePrice);
+            // setRecieveAmount((sendAmount * sendPrice) / recievePrice);
+        };
+
+        updatePrices();
+    }, [currentSendToken, currentRecieveToken, sendAmount]);
+    async function getQuote(currentAmount) {
+        console.log("yes")
+        if (isNaN(currentAmount) || currentAmount <= 0) {
+            console.error('Invalid fromAmount value:', currentAmount);
+            return;
+        }
+
+        const quote = await (
+            await fetch(
+                `https://quote-api.jup.ag/v6/quote?inputMint=${currentSendToken.id}&outputMint=${currentRecieveToken.id}&amount=${currentAmount * Math.pow(10, currentSendToken.decimals)}&slippage=0.5`
+            )
+        ).json();
+
+
+        if (quote && quote.outAmount) {
+            const outAmountNumber =
+                Number(quote.outAmount) / Math.pow(10, currentRecieveToken.decimals);
+            setRecieveAmount(outAmountNumber);
+            // console.log("qote", quote.priceImpactPct))
+            setPriceImpact(quote.priceImpactPct)
+        }
+
+        setQuoteResponse(quote);
+    }
+    const connectwallet = async () => {
+        try {
+            await select(PhantomWalletName);
+
+            await connect();
+        } catch (err) {
+            console.log("Error", err);
+            if (err instanceof WalletNotReadyError) {
+
+                toastNotify("warning", "Wallet Not Ready");
+            } else if (err instanceof WalletConnectionError) {
+                toastNotify("error", "Wallet Connection Error");
+            }
+        }
+    }
+
+    const handleSwap = async () => {
+        try {
+            console.log(publicKey)
+
+        } catch (error) {
+            console.log(error)
 
         }
-        getCoins()
-    }, []);
+    }
     return (
         <div className="h-full py-8 min-w-[500px]">
             <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
@@ -57,7 +162,8 @@ const SwapComponent = () => {
                                             <div onClick={() => {
                                                 setCurrentSendToken({
                                                     symbol: coin.symbol,
-                                                    logoURI: coin.logoURI
+                                                    logoURI: coin.logoURI,
+                                                    id: coin.address,
                                                 })
                                                 setSendMenu(false)
                                             }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
@@ -76,12 +182,14 @@ const SwapComponent = () => {
                     </div>
                     <div className="text-right">
                         <input
-                            type="text"
+                            type="number"
                             value={sendAmount}
+
                             onChange={(e) => setSendAmount(e.target.value)}
-                            className="text-white text-4xl font-semibold bg-transparent border-none focus:outline-none md:max-w-80 text-right"
+                            className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none md:max-w-80 text-right -mr-4"
                         />
-                        <p className="text-tertiary text-sm">-$100.00</p>
+                        <p className="text-tertiary text-sm">${(sendAmount * sendTokenPrice).toFixed(2)}</p>
+
                     </div>
                 </div>
             </div>
@@ -118,7 +226,8 @@ const SwapComponent = () => {
                                             <div onClick={() => {
                                                 setCurrentRecieveToken({
                                                     symbol: coin.symbol,
-                                                    logoURI: coin.logoURI
+                                                    logoURI: coin.logoURI,
+                                                    id: coin.address,
                                                 })
                                                 setRecieveMenu(false)
                                             }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
@@ -136,12 +245,12 @@ const SwapComponent = () => {
                     <div className="text-right">
                         <input
                             type="text"
-                            value={recieveAmount}
+                            value={recieveAmount.toFixed(8)}
                             disabled
                             onChange={(e) => setRecieveAmount(e.target.value)}
-                            className="text-white md:max-w-80 text-4xl font-bold bg-transparent border-none focus:outline-none text-right"
+                            className="text-white md:max-w-80 text-2xl font-bold bg-transparent border-none focus:outline-none text-right"
                         />
-                        <p className="text-tertiary text-sm">-$100.23</p>
+                        <p className="text-tertiary text-sm">${(recieveAmount * recieveTokenPrice).toFixed(2)}</p>
                     </div>
                 </div>
             </div>
@@ -165,7 +274,7 @@ const SwapComponent = () => {
             <div className=" p-4">
                 <div className="flex items-center gap-2">
                     <p className="text-white text-sm">
-                        1 {currentSendToken.symbol} = 0.0051172785 {currentRecieveToken.symbol}
+                        1 {currentSendToken.symbol} = {(sendTokenPrice / recieveTokenPrice).toFixed(8)} {currentRecieveToken.symbol}
                     </p>
                     <img src="/images/icons/check-rounded.svg" className="w-4" alt="icon" />
                 </div>
@@ -175,12 +284,22 @@ const SwapComponent = () => {
                         <p>Price Impact</p>
                     </div>
                     <div className="text-right">
-                        <p className="text-white text-sm">0.0051172785 <span className="text-tertiary font-semibold">{currentRecieveToken.symbol}</span> </p>
-                        <p className="text-tertiary font-semibold text-sm">0.02%</p>
+                        <p className="text-white text-sm">{(recieveAmount * 0.99).toFixed(8)} <span className="text-tertiary font-semibold">{currentRecieveToken.symbol}</span> </p>
+                        <p className="text-tertiary font-semibold text-sm">  {priceImpact.toFixed(2)}%</p>
+
                     </div>
                 </div>
             </div>
-            <button className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Connect Wallet</button>
+
+            {
+                !publicKey && <button onClick={() => connectwallet()} className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Connect Wallet</button>
+            }
+            {
+                connecting && <button className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Connecting...</button>
+            }
+            {
+                connected && <button onClick={() => handleSwap()} className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Swap</button>
+            }
 
         </div >
     );
