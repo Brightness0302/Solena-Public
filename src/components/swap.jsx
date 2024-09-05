@@ -1,5 +1,5 @@
 import { PhantomWalletName } from "@solana/wallet-adapter-phantom";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchCoins } from "../services/swap";
 import { useToken } from "../context/tokenContext/provider";
 import axios from "axios";
@@ -10,7 +10,7 @@ import {
 
 } from "@solana/wallet-adapter-base";
 import { toastNotify } from "../utils/toast";
-import { Connection } from "@solana/web3.js";
+import { Connection, VersionedTransaction } from "@solana/web3.js";
 const SwapComponent = () => {
     const [sendAmount, setSendAmount] = useState(100);
     const [recieveAmount, setRecieveAmount] = useState(0);
@@ -24,13 +24,15 @@ const SwapComponent = () => {
     const [priceImpact, setPriceImpact] = useState(0);
     const [quoteResponse, setQuoteResponse] = useState(null);
 
+    const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/-6q3g6iwvLteNgfo6o7o-ZGa14h-MbqZ", 'confirmed');
 
     const {
         select,
         connect,
-        connecting,
+
         connected,
         publicKey,
+        signTransaction,
 
     } = useWallet();
 
@@ -48,13 +50,12 @@ const SwapComponent = () => {
             `https://price.jup.ag/v6/price?ids=${id}`,
 
         );
-        console.log("sss", response.data)
         return response.data.data[id]?.price || 1;
     };
 
-    // useEffect(() => {
-    //     getQuote(sendAmount);
-    // }, [sendAmount]);
+    useEffect(() => {
+        getQuote(sendAmount);
+    }, [sendAmount]);
 
     useEffect(() => {
         const getCoins = async () => {
@@ -63,17 +64,7 @@ const SwapComponent = () => {
         };
         getCoins();
     }, []);
-    useEffect(() => {
-        if (sendAmount && sendTokenPrice && recieveTokenPrice) {
-            const calculatedReceiveAmount = (sendAmount * sendTokenPrice) / recieveTokenPrice;
-            // setRecieveAmount(calculatedReceiveAmount);
-            const expectedPrice = sendTokenPrice / recieveTokenPrice;
-            const actualPrice = calculatedReceiveAmount / sendAmount;
-            const impact = ((expectedPrice - actualPrice) / expectedPrice) * 100;
 
-            setPriceImpact(impact);
-        }
-    }, [sendAmount, sendTokenPrice, recieveTokenPrice]);
     useEffect(() => {
         const updatePrices = async () => {
             const sendPrice = await fetchTokenPrice(currentSendToken.id);
@@ -86,7 +77,6 @@ const SwapComponent = () => {
         updatePrices();
     }, [currentSendToken, currentRecieveToken, sendAmount]);
     async function getQuote(currentAmount) {
-        console.log("yes")
         if (isNaN(currentAmount) || currentAmount <= 0) {
             console.error('Invalid fromAmount value:', currentAmount);
             return;
@@ -103,8 +93,8 @@ const SwapComponent = () => {
             const outAmountNumber =
                 Number(quote.outAmount) / Math.pow(10, currentRecieveToken.decimals);
             setRecieveAmount(outAmountNumber);
-            // console.log("qote", quote.priceImpactPct))
-            setPriceImpact(quote.priceImpactPct)
+            setPriceImpact(parseFloat(quote.priceImpactPct));
+
         }
 
         setQuoteResponse(quote);
@@ -125,15 +115,57 @@ const SwapComponent = () => {
         }
     }
 
-    const handleSwap = async () => {
+    async function handleSwap() {
+        if (!connected || !signTransaction) {
+            toastNotify(
+                "error", 'Wallet is not connected or does not support signing transactions'
+            );
+            return;
+        }
+
+        const { swapTransaction } = await (
+            await fetch('https://quote-api.jup.ag/v6/swap', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    quoteResponse,
+                    userPublicKey: publicKey?.toString(),
+                    wrapAndUnwrapSol: true,
+                    // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
+                    // feeAccount: "fee_account_public_key"
+                }),
+            })
+        ).json();
+
         try {
-            console.log(publicKey)
+            const swapTransactionBuf = Buffer.from(swapTransaction, 'base64');
+            const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
+            const signedTransaction = await signTransaction(transaction);
+
+
+            const rawTransaction = signedTransaction.serialize();
+            const txid = await connection.sendRawTransaction(rawTransaction, {
+                skipPreflight: true,
+                maxRetries: 2,
+            });
+
+            const latestBlockHash = await connection.getLatestBlockhash();
+            await connection.confirmTransaction({
+                blockhash: latestBlockHash.blockhash,
+                lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+                signature: txid
+            }, 'confirmed');
+
+            console.log(`https://solscan.io/tx/${txid}`);
 
         } catch (error) {
-            console.log(error)
-
+            toastNotify("error", 'Error signing or sending the transaction', error);
         }
     }
+
+
     return (
         <div className="h-full py-8 min-w-[500px]">
             <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
@@ -294,9 +326,7 @@ const SwapComponent = () => {
             {
                 !publicKey && <button onClick={() => connectwallet()} className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Connect Wallet</button>
             }
-            {
-                connecting && <button className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Connecting...</button>
-            }
+
             {
                 connected && <button onClick={() => handleSwap()} className=" shadow-gradient font-semibold hover:text-white text-sm text-black rounded-2xl bg-gradient-to-r py-3 mt-2 from-gradient-start to-gradient-end w-full">Swap</button>
             }
