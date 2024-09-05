@@ -110,20 +110,17 @@ export default function CustomWalletModal({ showModal, setShowModal }) {
   return (
     <div
       onClick={handler}
-      className={`fixed top-0 left-0 w-full h-full flex justify-center items-center z-20 ${
-        showModal || hideModal ? "visible" : "invisible"
-      }`}
+      className={`fixed top-0 left-0 w-full h-full flex justify-center items-center z-20 ${showModal || hideModal ? "visible" : "invisible"
+        }`}
     >
       <div
-        className={`fixed top-0 left-0 w-full h-full backdrop-blur-md ${
-          showModal ? "ReactModal__Overlay--after-open" : "ReactModal__Overlay"
-        } ${hideModal ? "ReactModal__Overlay--before-close" : ""}`}
+        className={`fixed top-0 left-0 w-full h-full backdrop-blur-md ${showModal ? "ReactModal__Overlay--after-open" : "ReactModal__Overlay"
+          } ${hideModal ? "ReactModal__Overlay--before-close" : ""}`}
       ></div>
       <div
         ref={container}
-        className={`z-10 flex flex-col bg-[#1B1B36] border-2 border-[#ECFDFF10] rounded-[34px] px-12 py-8 gap-5 modal ${
-          showModal ? "ReactModal__Overlay--after-open" : "ReactModal__Overlay"
-        } ${hideModal ? "ReactModal__Overlay--before-close" : ""}`}
+        className={`z-10 flex flex-col bg-[#1B1B36] border-2 border-[#ECFDFF10] rounded-[34px] px-12 py-8 gap-5 modal ${showModal ? "ReactModal__Overlay--after-open" : "ReactModal__Overlay"
+          } ${hideModal ? "ReactModal__Overlay--before-close" : ""}`}
       >
         <div className="flex justify-end items-end">
           <CloseButton
