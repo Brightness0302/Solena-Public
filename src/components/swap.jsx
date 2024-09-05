@@ -24,7 +24,7 @@ const SwapComponent = () => {
     const [priceImpact, setPriceImpact] = useState(0);
     const [quoteResponse, setQuoteResponse] = useState(null);
 
-    const connection = new Connection("https://solana-mainnet.g.alchemy.com/v2/-6q3g6iwvLteNgfo6o7o-ZGa14h-MbqZ", 'confirmed');
+    const connection = new Connection("https://prettiest-stylish-research.solana-mainnet.quiknode.pro/26809c4295ddc594145dd266b6733e0de2bcc9d7", 'confirmed');
 
     const {
         select,
@@ -54,8 +54,10 @@ const SwapComponent = () => {
     };
 
     useEffect(() => {
-        getQuote(sendAmount);
-    }, [sendAmount]);
+        if (sendAmount !== '' && !isNaN(parseFloat(sendAmount))) {
+            getQuote(sendAmount);
+        }
+    }, [sendAmount, currentSendToken]);
 
     useEffect(() => {
         const getCoins = async () => {
@@ -77,24 +79,26 @@ const SwapComponent = () => {
         updatePrices();
     }, [currentSendToken, currentRecieveToken, sendAmount]);
     async function getQuote(currentAmount) {
-        if (isNaN(currentAmount) || currentAmount <= 0) {
-            console.error('Invalid fromAmount value:', currentAmount);
+
+        const amount = parseFloat(currentAmount);
+
+        if (isNaN(amount) || amount <= 0) {
+            console.error('Invalid amount:', currentAmount);
             return;
         }
 
+
         const quote = await (
             await fetch(
-                `https://quote-api.jup.ag/v6/quote?inputMint=${currentSendToken.id}&outputMint=${currentRecieveToken.id}&amount=${currentAmount * Math.pow(10, currentSendToken.decimals)}&slippage=0.5`
+                `https://quote-api.jup.ag/v6/quote?inputMint=${currentSendToken.id}&outputMint=${currentRecieveToken.id}&amount=${amount * Math.pow(10, currentSendToken.decimals)}&slippage=50`
             )
         ).json();
-
 
         if (quote && quote.outAmount) {
             const outAmountNumber =
                 Number(quote.outAmount) / Math.pow(10, currentRecieveToken.decimals);
             setRecieveAmount(outAmountNumber);
             setPriceImpact(parseFloat(quote.priceImpactPct));
-
         }
 
         setQuoteResponse(quote);
@@ -165,7 +169,11 @@ const SwapComponent = () => {
         }
     }
 
+    const handleChange = async () => {
+        setCurrentRecieveToken(currentSendToken);
+        setCurrentSendToken(currentRecieveToken)
 
+    }
     return (
         <div className="h-full py-8 min-w-[500px]">
             <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
@@ -196,6 +204,7 @@ const SwapComponent = () => {
                                                     symbol: coin.symbol,
                                                     logoURI: coin.logoURI,
                                                     id: coin.address,
+                                                    decimals: coin.decimals,
                                                 })
                                                 setSendMenu(false)
                                             }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
@@ -214,11 +223,14 @@ const SwapComponent = () => {
                     </div>
                     <div className="text-right">
                         <input
-                            type="number"
-                            value={sendAmount}
 
-                            onChange={(e) => setSendAmount(e.target.value)}
-                            className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none md:max-w-80 text-right -mr-4"
+                            value={sendAmount}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                setSendAmount(value);
+
+                            }}
+                            className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none md:max-w-80 text-right "
                         />
                         <p className="text-tertiary text-sm">${(sendAmount * sendTokenPrice).toFixed(2)}</p>
 
@@ -227,7 +239,7 @@ const SwapComponent = () => {
             </div>
 
             <div className="flex justify-center items-center -my-5  ">
-                <button className="w-12 z-10 h-12 shadow-gradient   font-bold text-xs bg-gradient-to-r from-gradient-start to-gradient-end rounded-full flex items-center justify-center">
+                <button onClick={() => handleChange()} className="w-12 z-10 h-12 shadow-gradient   font-bold text-xs bg-gradient-to-r from-gradient-start to-gradient-end rounded-full flex items-center justify-center">
                     <img src="/images/icons/shape.svg" />
                 </button>
             </div>
@@ -260,6 +272,7 @@ const SwapComponent = () => {
                                                     symbol: coin.symbol,
                                                     logoURI: coin.logoURI,
                                                     id: coin.address,
+                                                    decimals: coin.decimals,
                                                 })
                                                 setRecieveMenu(false)
                                             }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
