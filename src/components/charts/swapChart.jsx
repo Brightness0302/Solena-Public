@@ -93,7 +93,7 @@ const SwapChart = () => {
 
       type: "datetime",
       labels: {
-        show: false,
+        show: true,
 
         style: {
           colors: "#9CA3AF",
