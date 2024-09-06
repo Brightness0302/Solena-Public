@@ -90,7 +90,6 @@ const SwapChart = () => {
     },
 
     xaxis: {
-
       type: "datetime",
       labels: {
         show: true,
@@ -104,6 +103,8 @@ const SwapChart = () => {
       labels: {
         show: true,
         align: "right",
+        minWidth: 10,
+        maxWidth: 45,
         style: {
           colors: "#9CA3AF",
         },

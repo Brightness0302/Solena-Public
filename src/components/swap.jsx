@@ -10,6 +10,9 @@ import {
 
 } from "@solana/wallet-adapter-base";
 import { toastNotify } from "../utils/toast";
+import { MdOutlineVerified } from "react-icons/md";
+import { GoVerified } from "react-icons/go";
+
 import { Connection, VersionedTransaction } from "@solana/web3.js";
 const SwapComponent = () => {
     const [sendAmount, setSendAmount] = useState(100);
@@ -23,6 +26,17 @@ const SwapComponent = () => {
     const [recieveTokenPrice, setRecieveTokenPrice] = useState(1);
     const [priceImpact, setPriceImpact] = useState(0);
     const [quoteResponse, setQuoteResponse] = useState(null);
+    const [coins, setCoins] = useState([])
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm2, setSearchTerm2] = useState("");
+    const filteredCoins = coins?.filter(coin =>
+        coin.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        coin.address.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const filteredCoins2 = coins?.filter(coin =>
+        coin.symbol.toLowerCase().includes(searchTerm2.toLowerCase()) ||
+        coin.address.toLowerCase().includes(searchTerm2.toLowerCase())
+    );
 
     const connection = new Connection("https://prettiest-stylish-research.solana-mainnet.quiknode.pro/26809c4295ddc594145dd266b6733e0de2bcc9d7", 'confirmed');
 
@@ -37,7 +51,6 @@ const SwapComponent = () => {
     } = useWallet();
 
 
-    const [coins, setCoins] = useState([])
     const handleCheap = () => {
         setTab("cheap");
     };
@@ -178,7 +191,7 @@ const SwapComponent = () => {
         <div className="h-full py-8 min-w-[500px]">
             <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
                 <h2 className="text-base font-medium text-gray-400 mb-2">You send</h2>
-                <div className="flex items-center justify-between relative   py-4">
+                <div className="flex items-center justify-between    py-4">
                     <div className="flex items-center">
                         <img
                             src={currentSendToken.logoURI}
@@ -194,30 +207,45 @@ const SwapComponent = () => {
                         />
 
                         {sendMenu && (
+                            <>
+                                <div className="fixed inset-0 backdrop-blur-sm bg-black bg-opacity-40 z-40"
+                                    onClick={() => setSendMenu(false)}></div>
+                                <div className="fixed inset-0 flex items-center justify-center z-50">
+                                    <div className="absolute md:h-[450px]   z-50  rounded-xl shadow-lg p-4  text-white backdrop-blur-3xl   md:w-[400px] top-5  bottom-0  bg-white border  border-border bg-opacity-0  ">
+                                        <input
+                                            type="text"
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            placeholder="Search by token or paste address"
+                                            className="w-full p-2 mb-4 bg-[#1b1b36] rounded text-sm text-white outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
+                                        <div className="overflow-y-auto  md:h-[350px] space-y-3">
+                                            {filteredCoins.map((coin, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    onClick={() => {
+                                                        setCurrentSendToken({
+                                                            symbol: coin.symbol,
+                                                            logoURI: coin.logoURI,
+                                                            id: coin.address,
+                                                            decimals: coin.decimals,
+                                                        });
+                                                        setSendMenu(false);
+                                                    }}
+                                                    className="flex items-center justify-between cursor-pointer p-2 hover:bg-[#1b1b36] rounded-md"
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <img src={coin.logoURI} className="w-6 rounded-full" alt={coin.symbol} />
+                                                        <span className="text-sm">{coin.symbol}</span>
+                                                        <GoVerified color="#5F78FF" />
+                                                    </div>
+                                                    <span className="text-xs text-gray-400">{`${coin.address.substring(0, 5)}...${coin.address.substring(coin.address.length - 5)}`}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
 
-                            <div className="absolute h-[140px] backdrop-blur-3xl  overflow-y-auto w-[213px] top-14  bottom-0 -left-3 bg-white border border-border rounded-[34px] bg-opacity-0    mt-2 p-4">
-                                <div className="text-white">
-                                    {
-                                        coins.map((coin, idx) => (
-                                            <div onClick={() => {
-                                                setCurrentSendToken({
-                                                    symbol: coin.symbol,
-                                                    logoURI: coin.logoURI,
-                                                    id: coin.address,
-                                                    decimals: coin.decimals,
-                                                })
-                                                setSendMenu(false)
-                                            }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
-                                                <img src={coin.logoURI
-                                                } className="w-6 rounded-full" />
-                                                {coin.symbol}
-
-                                            </div>
-                                        ))
-                                    }
                                 </div>
-                            </div>
-
+                            </>
                         )}
 
                     </div>
@@ -246,7 +274,7 @@ const SwapComponent = () => {
 
             <div className="mb-8  bg-white border border-border rounded-[34px] bg-opacity-5  p-6 ">
                 <h2 className="text-base font-medium text-gray-400 mb-2">You receive</h2>
-                <div className="flex items-center justify-between relative  py-4">
+                <div className="flex items-center justify-between   py-4">
                     <div className="flex items-center">
                         <img
                             src={currentRecieveToken.logoURI}
@@ -263,28 +291,47 @@ const SwapComponent = () => {
                             className="cursor-pointer"
                         />
                         {recieveMenu && (
-                            <div className="absolute h-[140px] overflow-y-auto w-[213px] top-14 z-50 bottom-0 -left-3 bg-white border border-border rounded-[34px] bg-opacity-0 backdrop-blur-3xl  mt-2 p-4">
-                                <div className="text-white">
-                                    {
-                                        coins.map((coin, idx) => (
-                                            <div onClick={() => {
-                                                setCurrentRecieveToken({
-                                                    symbol: coin.symbol,
-                                                    logoURI: coin.logoURI,
-                                                    id: coin.address,
-                                                    decimals: coin.decimals,
-                                                })
-                                                setRecieveMenu(false)
-                                            }} key={idx} className="flex cursor-pointer text-tertiary  items-center gap-2 hover:text-white mb-2">
-                                                <img src={coin.logoURI
-                                                } className="w-6 rounded-full" />
-                                                {coin.symbol}
+                            <>
+                                <div className="fixed inset-0 backdrop-blur-sm bg-black bg-opacity-40 z-40"
+                                    onClick={() => setRecieveMenu(false)}></div>
+                                <div className="fixed inset-0 flex items-center justify-center z-50">
+                                    <div className="absolute md:h-[450px]   z-50  rounded-xl shadow-lg p-4  text-white backdrop-blur-3xl   md:w-[400px] top-5  bottom-0  bg-white border  border-border bg-opacity-0  ">
+                                        <input
+                                            type="text"
+                                            onChange={(e) => setSearchTerm2(e.target.value)}
+                                            placeholder="Search by token or paste address"
+                                            className="w-full p-2 mb-4 bg-[#1b1b36] rounded text-sm text-white outline-none focus:ring-2 focus:ring-blue-500"
+                                        />
 
-                                            </div>
-                                        ))
-                                    }
+
+
+                                        <div className="overflow-y-auto  md:h-[350px] space-y-3">
+                                            {filteredCoins2.map((coin, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    onClick={() => {
+                                                        setCurrentRecieveToken({
+                                                            symbol: coin.symbol,
+                                                            logoURI: coin.logoURI,
+                                                            id: coin.address,
+                                                            decimals: coin.decimals,
+                                                        });
+                                                        setRecieveMenu(false);
+                                                    }}
+                                                    className="flex items-center justify-between cursor-pointer p-2 hover:bg-[#1b1b36] rounded-md"
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <img src={coin.logoURI} className="w-6 rounded-full" alt={coin.symbol} />
+                                                        <span className="text-sm">{coin.symbol}</span>
+                                                        <GoVerified color="#5F78FF" />
+                                                    </div>
+                                                    <span className="text-xs text-gray-400">{`${coin.address.substring(0, 5)}...${coin.address.substring(coin.address.length - 5)}`}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </>
                         )}
                     </div>
                     <div className="text-right">
