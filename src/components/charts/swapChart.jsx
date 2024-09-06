@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const COINGECKO_API_KEY = "CG-YB1hTp8X6ztpPEqEr2FCUGDB";
-const COINGECKO_API_URL = "https://pro-api.coingecko.com/api/v3/coins/solana/contract";
+const COINGECKO_API_URL = "https://pro-api.coingecko.com/api/v3/coins/";
 
 
 const SwapChart = () => {
@@ -20,64 +20,66 @@ const SwapChart = () => {
     "1w": 7 * 24 * 60 * 60,
     "1m": 30 * 24 * 60 * 60,
   };
-  function generateSimilarNumbers(mean, variation, count) {
-    const numbers = [];
-    for (let i = 0; i < count; i++) {
-      const randomVariation = (Math.random() - 0.5) * variation * 2;
-      numbers.push(mean + randomVariation);
-    }
-    return numbers;
-  }
+
   useEffect(() => {
-    const fetchTokenData = async () => {
-      const now = Math.floor(Date.now() / 1000);
-      const from = now - timeRanges[selectedTimeRange];
-      const to = now;
-
-      const options = {
-        method: 'GET',
-        url: `${COINGECKO_API_URL}/${currentSendToken.id}/market_chart/range`,
-        params: {
-          vs_currency: 'usd',
-          from,
-          to
-        },
-        headers: {
-          accept: 'application/json',
-          'x-cg-pro-api-key': COINGECKO_API_KEY
-        }
-      };
-
+    const fetchTokenIdAndData = async () => {
       try {
-        const response = await axios.request(options);
-        const prices = response.data.prices;
+        const tokenAddress = currentSendToken.id;
+        const tokenResponse = await axios.get(
+          `${COINGECKO_API_URL}/solana/contract/${tokenAddress}`,
+          {
+            headers: {
+              accept: "application/json",
+              "x-cg-pro-api-key": COINGECKO_API_KEY,
+            },
+          }
+        );
 
-        const formattedData = prices.map((price, index) => {
-          const open = index === 0 ? price[1] : prices[index - 1][1];
-          const close = price[1];
-          const high = Math.max(open, close);
-          const low = Math.min(open, close);
-          const mean = (high + low) / 2;
-          const variation = (high - low) / 2;
-          return {
-            x: new Date(price[0]),
-            y: generateSimilarNumbers(mean, variation, 4)
-          };
-        });
+        const tokenId = tokenResponse.data.id;
+        console.log("id", tokenResponse.data)
 
-        setSeries([{ data: formattedData }]);
+        const now = Math.floor(Date.now() / 1000);
+        const from = now - timeRanges[selectedTimeRange];
+        const to = now;
 
-        const firstPrice = prices[0][1];
-        const lastPrice = prices[prices.length - 1][1];
-        setCurrentPrice(lastPrice);
-        setPriceChange(((lastPrice - firstPrice) / firstPrice) * 100);
+        const ohlcResponse = await axios.get(
+          `${COINGECKO_API_URL}/${tokenId}/ohlc/range`,
+          {
+            params: {
+              vs_currency: 'usd',
+
+              interval: 'hourly',
+              from,
+              to,
+            },
+            headers: {
+              accept: "application/json",
+              "x-cg-pro-api-key": COINGECKO_API_KEY,
+            },
+          }
+        );
+
+        const prices = ohlcResponse.data;
+        console.log("prices", prices)
+
+        const formattedData = prices.map((price) => ({
+          x: new Date(price[0]),
+          y: [price[1], price[2], price[3], price[4]],
+        }));
+
+        setSeries([{ name: "candlestick", data: formattedData }]);
+        setCurrentPrice(prices[prices.length - 1][4]);
+        setPriceChange(((prices[prices.length - 1][4] - prices[0][1]) / prices[0][1]) * 100);
       } catch (error) {
         console.error("Error fetching token data:", error);
       }
     };
 
-    fetchTokenData();
-  }, [selectedTimeRange, currentSendToken.id]);
+    if (currentSendToken) {
+      fetchTokenIdAndData();
+    }
+  }, [selectedTimeRange, currentSendToken]);
+
 
   const options = {
     chart: {
