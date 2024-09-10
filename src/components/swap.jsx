@@ -458,7 +458,9 @@ const SwapComponent = () => {
             <img src="/images/icons/fast.svg" />
           </button>
         </div>
-        <p className="text-white ">Cheap, but slow transaction</p>
+        <p className="text-white text-sm sm:text-base">
+          Cheap, but slow transaction
+        </p>
       </div>
 
       <div className=" p-4">

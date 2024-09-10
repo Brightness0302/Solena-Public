@@ -25,13 +25,13 @@ function Layout() {
         <Link to={"https://solana-project-chi.vercel.app/"}>
           <img src="/logo.png" alt="" />
         </Link>
-        <button className="block sm:hidden">
+        {/* <button className="block sm:hidden">
           <img
             className="w-[16px] h-[16px]"
             src="/images/icons/nav-icon.svg"
             alt=""
           />
-        </button>
+        </button> */}
         <div className="flex-row justify-end gap-3 items-center hidden sm:flex">
           <div className="flex flex-row justify-start gap-1 items-center">
             <NavLink
@@ -40,10 +40,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                    background:
-                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                    borderBottom: "2px solid #3CD2B5",
-                  }
+                      background:
+                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                      borderBottom: "2px solid #3CD2B5",
+                    }
                   : {};
               }}
             >
@@ -55,10 +55,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                    background:
-                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                    borderBottom: "2px solid #3CD2B5",
-                  }
+                      background:
+                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                      borderBottom: "2px solid #3CD2B5",
+                    }
                   : {};
               }}
             >
@@ -70,10 +70,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                    background:
-                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                    borderBottom: "2px solid #3CD2B5",
-                  }
+                      background:
+                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                      borderBottom: "2px solid #3CD2B5",
+                    }
                   : {};
               }}
             >
@@ -85,10 +85,10 @@ function Layout() {
               style={({ isActive }) => {
                 return isActive
                   ? {
-                    background:
-                      "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
-                    borderBottom: "2px solid #3CD2B5",
-                  }
+                      background:
+                        "linear-gradient(to bottom, #3CD2B500, #3CD2B519)",
+                      borderBottom: "2px solid #3CD2B5",
+                    }
                   : {};
               }}
             >
@@ -114,17 +114,17 @@ function Layout() {
         <div className="fixed bottom-0 left-0 w-full flex sm:hidden flex-row justify-between items-center h-[70px] backdrop-blur-sm filter bg-[#252548CC] rounded-t-3xl px-5 py-8 z-30 nav-bar">
           <NavLink
             className={`flex flex-col items-center gap-1`}
-            to={"/"}
+            to={"/swap"}
             style={({ isActive }) => {
               return isActive
                 ? {
-                  stroke: "#ECFDFF",
-                  color: "#ECFDFF",
-                }
+                    stroke: "#ECFDFF",
+                    color: "#ECFDFF",
+                  }
                 : {
-                  stroke: "#7979AC",
-                  color: "#7979AC",
-                };
+                    stroke: "#7979AC",
+                    color: "#7979AC",
+                  };
             }}
           >
             <Swap width={16} height={15} />
@@ -136,13 +136,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                  stroke: "#ECFDFF",
-                  color: "#ECFDFF",
-                }
+                    stroke: "#ECFDFF",
+                    color: "#ECFDFF",
+                  }
                 : {
-                  stroke: "#7979AC",
-                  color: "#7979AC",
-                };
+                    stroke: "#7979AC",
+                    color: "#7979AC",
+                  };
             }}
           >
             <Stake width={16} height={18} />
@@ -154,13 +154,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                  stroke: "#ECFDFF",
-                  color: "#ECFDFF",
-                }
+                    stroke: "#ECFDFF",
+                    color: "#ECFDFF",
+                  }
                 : {
-                  stroke: "#7979AC",
-                  color: "#7979AC",
-                };
+                    stroke: "#7979AC",
+                    color: "#7979AC",
+                  };
             }}
           >
             <Farm width={16} height={16} />
@@ -172,13 +172,13 @@ function Layout() {
             style={({ isActive }) => {
               return isActive
                 ? {
-                  stroke: "#ECFDFF",
-                  color: "#ECFDFF",
-                }
+                    stroke: "#ECFDFF",
+                    color: "#ECFDFF",
+                  }
                 : {
-                  stroke: "#7979AC",
-                  color: "#7979AC",
-                };
+                    stroke: "#7979AC",
+                    color: "#7979AC",
+                  };
             }}
           >
             <Launchpad width={10} height={19} />

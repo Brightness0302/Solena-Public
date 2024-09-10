@@ -12,7 +12,7 @@ export const Swap = () => {
             favorite Solana SPL tokens.
           </span>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full block sm:hidden z-0">
+        <div className="absolute top-0 left-0 h-[210px] sm:h-[200px] w-full block sm:hidden z-0">
           <img
             className="pointer-events-none h-[210px] sm:h-[200px] w-full"
             src="/images/bar/1.jpg"

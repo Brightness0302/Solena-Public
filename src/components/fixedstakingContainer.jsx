@@ -50,7 +50,7 @@ export default function FixedStakingComponent({ setShowModal }) {
   };
 
   return (
-    <div className=" h-screen flex flex-col gap-8 px-5 sm:px-16 py-8 w-full z-10">
+    <div className="min-h-screen flex flex-col gap-8 px-5 sm:px-16 py-8 w-full z-10">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-8 sm:gap-10">
         <p className="text-[50px] font-bold">Fixed Staking</p>
         <div className="flex flex-row justify-between items-center gap-10 flex-grow">
