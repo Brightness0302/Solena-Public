@@ -244,3 +244,24 @@ body {
   background: linear-gradient(275.37deg, #3ed3b5 0%, #5f78ff 50%, #3ed3b5 100%);
   box-shadow: 0 8px 16px 0 #3ed3b533, 0 6px 20px 0 #5f78ff33;
 }
+
+/* Width of the scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track of the scrollbar */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle of the scrollbar */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
