@@ -195,7 +195,7 @@ const SwapChart = () => {
         </div>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 w-full ">
           <div className="flex items-end gap-5 mt-1">
-            <div className="font-bold text-5xl text-white">
+            <div className="font-bold text-3xl sm:text-5xl text-white">
               {" "}
               ${currentPrice ? currentPrice.toFixed(3) : "Loading..."}
             </div>
