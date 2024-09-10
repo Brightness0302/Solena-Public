@@ -24,12 +24,12 @@ export const Swap = () => {
         </div>
       </div>
 
-      <div className="px-5 sm:px-16 ">
-        <div className="flex flex-col sm:flex-row w-full gap-6">
-          <div className="flex-grow">
+      <div className="px-5 sm:px-16">
+        <div className="grid grid-cols-12 w-full gap-6">
+          <div className="col-span-7">
             <SwapChart />
           </div>
-          <div className="">
+          <div className="col-span-3/5 w-full ">
             <SwapComponent />
           </div>
         </div>
