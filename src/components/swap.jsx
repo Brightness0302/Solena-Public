@@ -267,14 +267,14 @@ const SwapComponent = () => {
                   }}
                 ></div>
                 <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <div className="absolute md:h-[450px] z-50 rounded-xl shadow-lg p-4 text-white backdrop-blur-3xl md:w-[400px] top-5 bottom-0 bg-white border border-border bg-opacity-0 pointer-events-auto">
+                  <div className="absolute h-[450px] z-50 rounded-xl shadow-lg p-4 text-white backdrop-blur-3xl w-[300px] sm:w-[400px] top-5 bottom-0 bg-white border border-border bg-opacity-0 pointer-events-auto">
                     <input
                       type="text"
                       onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Search by token or paste address"
                       className="w-full p-2 mb-4 bg-[#1b1b36] rounded text-sm text-white outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <div className="overflow-y-auto  md:h-[350px] space-y-3">
+                    <div className="overflow-y-auto h-[350px] space-y-3">
                       {filteredCoins.map((coin, idx) => (
                         <div
                           key={idx}
@@ -366,7 +366,7 @@ const SwapComponent = () => {
                   onClick={() => setRecieveMenu(false)}
                 ></div>
                 <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
-                  <div className="absolute md:h-[450px] z-50 rounded-xl shadow-lg p-4 text-white backdrop-blur-3xl md:w-[400px] top-5 bottom-0 bg-white border border-border bg-opacity-0 pointer-events-auto">
+                  <div className="absolute h-[450px] z-50 rounded-xl shadow-lg p-4 text-white backdrop-blur-3xl w-[300px] sm:w-[400px] top-5 bottom-0 bg-white border border-border bg-opacity-0 pointer-events-auto">
                     <input
                       type="text"
                       onChange={(e) => setSearchTerm2(e.target.value)}
@@ -374,7 +374,7 @@ const SwapComponent = () => {
                       className="w-full p-2 mb-4 bg-[#1b1b36] rounded text-sm text-white outline-none focus:ring-2 focus:ring-blue-500"
                     />
 
-                    <div className="overflow-y-auto  md:h-[350px] space-y-3">
+                    <div className="overflow-y-auto h-[350px] space-y-3">
                       {filteredCoins2.map((coin, idx) => (
                         <div
                           key={idx}
