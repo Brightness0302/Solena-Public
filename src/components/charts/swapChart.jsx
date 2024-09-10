@@ -6,10 +6,9 @@ import { useEffect, useState } from "react";
 const COINGECKO_API_KEY = "CG-YB1hTp8X6ztpPEqEr2FCUGDB";
 const COINGECKO_API_URL = "https://pro-api.coingecko.com/api/v3/coins/";
 
-
 const SwapChart = () => {
   const { currentSendToken, currentRecieveToken } = useToken();
-  const [series, setSeries] = useState([{ name: 'candle', data: [] }]);
+  const [series, setSeries] = useState([{ name: "candle", data: [] }]);
   const [currentPrice, setCurrentPrice] = useState(null);
   const [priceChange, setPriceChange] = useState(null);
   const [selectedTimeRange, setSelectedTimeRange] = useState("1w");
@@ -23,6 +22,7 @@ const SwapChart = () => {
 
   useEffect(() => {
     const fetchTokenIdAndData = async () => {
+      setCurrentPrice(null);
       try {
         const tokenAddress = currentSendToken.id;
         const tokenResponse = await axios.get(
@@ -36,7 +36,21 @@ const SwapChart = () => {
         );
 
         const tokenId = tokenResponse.data.id;
-        console.log("id", tokenResponse.data)
+        // console.log("id", tokenResponse.data);
+
+        const token1Address = currentRecieveToken.id;
+        const token1Response = await axios.get(
+          `${COINGECKO_API_URL}/solana/contract/${token1Address}`,
+          {
+            headers: {
+              accept: "application/json",
+              "x-cg-pro-api-key": COINGECKO_API_KEY,
+            },
+          }
+        );
+
+        const token1Id = token1Response.data.id;
+        // console.log("id", token1Response.data);
 
         const now = Math.floor(Date.now() / 1000);
         const from = now - timeRanges[selectedTimeRange];
@@ -46,9 +60,9 @@ const SwapChart = () => {
           `${COINGECKO_API_URL}/${tokenId}/ohlc/range`,
           {
             params: {
-              vs_currency: 'usd',
+              vs_currency: "usd",
 
-              interval: 'hourly',
+              interval: "hourly",
               from,
               to,
             },
@@ -59,17 +73,49 @@ const SwapChart = () => {
           }
         );
 
-        const prices = ohlcResponse.data;
-        console.log("prices", prices)
+        const ohlc1Response = await axios.get(
+          `${COINGECKO_API_URL}/${token1Id}/ohlc/range`,
+          {
+            params: {
+              vs_currency: "usd",
 
-        const formattedData = prices.map((price) => ({
+              interval: "hourly",
+              from,
+              to,
+            },
+            headers: {
+              accept: "application/json",
+              "x-cg-pro-api-key": COINGECKO_API_KEY,
+            },
+          }
+        );
+
+        const prices = [];
+
+        for (var i = 0; i < ohlcResponse.data.length; i++) {
+          const tmp_data = ohlcResponse.data[i];
+          const tmp_data1 = ohlc1Response.data[i];
+          prices.push([
+            tmp_data[0],
+            tmp_data[1] / tmp_data1[1],
+            tmp_data[2] / tmp_data1[2],
+            tmp_data[3] / tmp_data1[3],
+            tmp_data[4] / tmp_data1[4],
+          ]);
+        }
+
+        // console.log("prices", prices);
+
+        const formattedData = prices.map((price, index) => ({
           x: new Date(price[0]),
           y: [price[1], price[2], price[3], price[4]],
         }));
 
         setSeries([{ name: "candlestick", data: formattedData }]);
         setCurrentPrice(prices[prices.length - 1][4]);
-        setPriceChange(((prices[prices.length - 1][4] - prices[0][1]) / prices[0][1]) * 100);
+        setPriceChange(
+          ((prices[prices.length - 1][4] - prices[0][1]) / prices[0][1]) * 100
+        );
       } catch (error) {
         console.error("Error fetching token data:", error);
       }
@@ -78,14 +124,11 @@ const SwapChart = () => {
     if (currentSendToken) {
       fetchTokenIdAndData();
     }
-  }, [selectedTimeRange, currentSendToken]);
-
+  }, [selectedTimeRange, currentSendToken, currentRecieveToken]);
 
   const options = {
     chart: {
       type: "candlestick",
-      height: 500,
-      width: "100%",
       toolbar: {
         show: false,
       },
@@ -112,6 +155,7 @@ const SwapChart = () => {
         },
       },
       opposite: true,
+      decimalsInFloat: 4,
     },
     tooltip: {
       enabled: false,
@@ -134,21 +178,34 @@ const SwapChart = () => {
   return (
     <div className="py-6 w-full relative">
       <div className="mb-7">
-        <div className={`text-base font-medium ${priceChange > 0 ? 'text-primary' : 'text-red-500'
-          }`}>
-          {priceChange ? `${priceChange.toFixed(2)}%` : "+0.00%"}
+        <div
+          className={`text-base font-medium ${
+            priceChange > 0 ? "text-primary" : "text-red-500"
+          }`}
+        >
+          {priceChange
+            ? `${priceChange > 0 ? "+" : ""}${priceChange.toFixed(2)}%`
+            : "+0.00%"}
         </div>
         <div className="flex justify-between items-center gap-6 w-full ">
-          <div className="flex items-center gap-2 mt-1">
-            <div className="font-bold text-5xl text-white">   ${currentPrice ? currentPrice.toFixed(2) : "Loading..."}</div>
+          <div className="flex items-end gap-5 mt-1">
+            <div className="font-bold text-5xl text-white">
+              {" "}
+              ${currentPrice ? currentPrice.toFixed(3) : "Loading..."}
+            </div>
             <div className="flex items-center gap-2">
               <img src={currentSendToken.logoURI} className="w-6" alt="icon" />
-              <img src={currentRecieveToken.logoURI} className="w-6" alt="icon" />
-              <div className="font-semibold text-base">{currentSendToken.symbol}/{currentRecieveToken.symbol}</div>
+              <img
+                src={currentRecieveToken.logoURI}
+                className="w-6"
+                alt="icon"
+              />
+              <div className="font-semibold text-base">
+                {currentSendToken.symbol}/{currentRecieveToken.symbol}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2 ">
-
             {Object.keys(timeRanges).map((range, idx) => (
               <div
                 key={idx}
@@ -165,15 +222,14 @@ const SwapChart = () => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-16">
+      {/* <div className="absolute bottom-16">
         <img src="/images/bar/line.svg" alt="icon" />
-      </div>
+      </div> */}
       <Chart
         options={options}
         series={series}
         type="candlestick"
         height={500}
-
       />
     </div>
   );

@@ -42,7 +42,7 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route exact path="/" element={<Layout />}>
-                <Route exact index element={<Swap />} />
+                <Route exact index element={<Home />} />
                 <Route
                   path="stake/sol"
                   element={downMd ? <Stake /> : <Home />}
