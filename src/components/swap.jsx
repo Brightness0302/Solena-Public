@@ -241,7 +241,7 @@ const SwapComponent = () => {
     <div className="h-full py-0 sm:py-8 w-full sm:w-[500px]">
       <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
         <h2 className="text-base font-medium text-gray-400 mb-2">You send</h2>
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between w-full py-4">
           <div className="flex items-center">
             <img
               src={currentSendToken.logoURI}
@@ -312,14 +312,14 @@ const SwapComponent = () => {
               </>
             )}
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end flex-grow">
             <input
               value={sendAmount}
               onChange={(e) => {
                 const value = e.target.value;
                 setSendAmount(value);
               }}
-              className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none md:max-w-80 text-right "
+              className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none text-right w-[150px]"
             />
             <p className="text-tertiary text-sm">
               ${(sendAmount * sendTokenPrice).toFixed(2)}
@@ -412,13 +412,13 @@ const SwapComponent = () => {
               </>
             )}
           </div>
-          <div className="text-right">
+          <div className="flex flex-col items-end flex-grow">
             <input
               type="text"
               value={recieveAmount.toFixed(8)}
               disabled
               onChange={(e) => setRecieveAmount(e.target.value)}
-              className="text-white md:max-w-80 text-2xl font-bold bg-transparent border-none focus:outline-none text-right"
+              className="text-white md:max-w-80 text-2xl font-bold bg-transparent border-none focus:outline-none text-right w-[150px]"
             />
             <p className="text-tertiary text-sm">
               ${(recieveAmount * recieveTokenPrice).toFixed(2)}

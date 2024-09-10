@@ -3,6 +3,9 @@ import { useToken } from "../../context/tokenContext/provider";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
 const COINGECKO_API_KEY = "CG-YB1hTp8X6ztpPEqEr2FCUGDB";
 const COINGECKO_API_URL = "https://pro-api.coingecko.com/api/v3/coins/";
 
@@ -12,6 +15,9 @@ const SwapChart = () => {
   const [currentPrice, setCurrentPrice] = useState(null);
   const [priceChange, setPriceChange] = useState(null);
   const [selectedTimeRange, setSelectedTimeRange] = useState("1w");
+
+  const theme = useTheme();
+  const downMd = useMediaQuery(theme.breakpoints.down("md"));
 
   const timeRanges = {
     "24h": 1 * 24 * 60 * 60,
@@ -187,7 +193,7 @@ const SwapChart = () => {
             ? `${priceChange > 0 ? "+" : ""}${priceChange.toFixed(2)}%`
             : "+0.00%"}
         </div>
-        <div className="flex justify-between items-center gap-6 w-full ">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 w-full ">
           <div className="flex items-end gap-5 mt-1">
             <div className="font-bold text-5xl text-white">
               {" "}
@@ -229,7 +235,7 @@ const SwapChart = () => {
         options={options}
         series={series}
         type="candlestick"
-        height={500}
+        height={downMd ? 300 : 500}
       />
     </div>
   );
