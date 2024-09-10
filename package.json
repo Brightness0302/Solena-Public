@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "copy:airdrop": "mkdir -p dist/airdrop || mkdir dist\\airdrop && cp -R airdrop dist || xcopy airdrop dist\\airdrop /e /i /y",
     "copy:gleam": "mkdir -p dist/gleam || mkdir dist\\gleam && cp -R gleam dist || xcopy gleam dist\\gleam /e /i /y",
-    "copy:vercel": "copyfiles vercel.json dist/ || cp vercel.json dist/"
+    "copy:vercel": "cp vercel.json dist/"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
