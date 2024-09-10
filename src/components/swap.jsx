@@ -226,8 +226,9 @@ const SwapComponent = () => {
         },
         "confirmed"
       );
-
       console.log(`https://solscan.io/tx/${txid}`);
+
+      toastNotify("success", "Swap successfully!");
     } catch (error) {
       toastNotify("error", "Error signing or sending the transaction", error);
     }
