@@ -30,7 +30,7 @@ export const Swap = () => {
 
       <div className="w-full px-5 sm:px-16">
         <div className="flex flex-col xl:flex-row w-full gap-6 pb-6 xl:pb-0 justify-center">
-          <div className="flex-grow xl:flex-none w-[600px]">
+          <div className="flex-grow xl:flex-none xl:w-[600px]">
             <SwapChart />
           </div>
           <div className="flex flex-col justify-center items-center">
