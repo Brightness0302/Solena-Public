@@ -190,19 +190,30 @@ const SwapComponent = () => {
       return;
     }
 
+    let swapBody = JSON.stringify({
+      quoteResponse,
+      userPublicKey: publicKey?.toString(),
+      wrapAndUnwrapSol: true,
+    });
+
+    if (tab === "fast") {
+      swapBody = JSON.stringify({
+        quoteResponse,
+        userPublicKey: publicKey?.toString(),
+        wrapAndUnwrapSol: true,
+        dynamicComputeUnitLimit: true, // allow dynamic compute limit instead of max 1,400,000
+        // custom priority fee
+        prioritizationFeeLamports: "auto", // or custom lamports: 1000
+      });
+    }
+
     const { swapTransaction } = await (
       await fetch("https://quote-api.jup.ag/v6/swap", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          quoteResponse,
-          userPublicKey: publicKey?.toString(),
-          wrapAndUnwrapSol: true,
-          // feeAccount is optional. Use if you want to charge a fee.  feeBps must have been passed in /quote API.
-          // feeAccount: "fee_account_public_key"
-        }),
+        body: swapBody,
       })
     ).json();
 
