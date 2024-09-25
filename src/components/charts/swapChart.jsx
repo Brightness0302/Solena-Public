@@ -152,14 +152,25 @@ const SwapChart = () => {
       labels: {
         show: true,
         align: "right",
-        minWidth: 10,
-        maxWidth: 45,
+        minWidth: 0,
+        maxWidth: 50,
         style: {
           colors: "#9CA3AF",
         },
+        formatter: function (val) {
+          if (val === 0) {
+            return "0";
+          } else if (Math.floor(val) <= 0) {
+            return val.toFixed(4);
+          } else if (val - Math.floor(val) === 0) {
+            return val.toFixed(0);
+          }
+          return val.toFixed(2);
+        },
       },
       opposite: true,
-      decimalsInFloat: 3,
+      floating: true,
+      decimalsInFloat: 5,
     },
     tooltip: {
       enabled: false,
