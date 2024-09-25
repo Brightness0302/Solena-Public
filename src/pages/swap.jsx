@@ -29,11 +29,11 @@ export const Swap = () => {
       </div>
 
       <div className="w-full px-5 sm:px-16">
-        <div className="flex flex-col xl:flex-row w-full gap-6 xl:gap-10 pb-6 xl:pb-0 justify-center">
-          <div className="flex-grow xl:flex-none xl:w-[600px]">
+        <div className="flex flex-col xl:flex-row w-full gap-2 xl:gap-4 pb-6 xl:pb-0 justify-center mt-4">
+          <div className="flex-grow xl:flex-none">
             <SwapChart />
           </div>
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-start items-start">
             <SwapComponent />
           </div>
         </div>

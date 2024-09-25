@@ -139,12 +139,10 @@ const SwapChart = () => {
         show: false,
       },
     },
-
     xaxis: {
       type: "datetime",
       labels: {
         show: true,
-
         style: {
           colors: "#9CA3AF",
         },
@@ -161,7 +159,7 @@ const SwapChart = () => {
         },
       },
       opposite: true,
-      decimalsInFloat: 4,
+      decimalsInFloat: 3,
     },
     tooltip: {
       enabled: false,
@@ -176,13 +174,12 @@ const SwapChart = () => {
     },
     grid: {
       strokeDashArray: 5,
-
       borderColor: "#4B5563",
     },
   };
 
   return (
-    <div className="py-6 w-full relative">
+    <div className="p-4 w-full relative bg-[#1C243E] rounded-2xl xl:w-[748px]">
       <div className="mb-7">
         <div
           className={`text-base font-medium ${
@@ -196,8 +193,11 @@ const SwapChart = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 w-full ">
           <div className="flex items-end gap-5 mt-1">
             <div className="font-bold text-3xl sm:text-5xl text-white">
-              {" "}
-              ${currentPrice ? currentPrice.toFixed(3) : "Loading..."}
+              {currentPrice ? (
+                <span>${currentPrice.toFixed(3)}</span>
+              ) : (
+                <span className="text-2xl">Loading...</span>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <img src={currentSendToken.logoURI} className="w-6" alt="icon" />
@@ -231,12 +231,14 @@ const SwapChart = () => {
       {/* <div className="absolute bottom-16">
         <img src="/images/bar/line.svg" alt="icon" />
       </div> */}
-      <Chart
-        options={options}
-        series={series}
-        type="candlestick"
-        height={downMd ? 300 : 500}
-      />
+      <div className="bg-gray-900 rounded-lg p-2">
+        <Chart
+          options={options}
+          series={series}
+          type="candlestick"
+          height={348}
+        />
+      </div>
     </div>
   );
 };

@@ -250,10 +250,10 @@ const SwapComponent = () => {
     setCurrentSendToken(currentRecieveToken);
   };
   return (
-    <div className="h-full py-0 sm:py-8 w-full sm:w-[500px]">
-      <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5  p-6  ">
-        <h2 className="text-base font-medium text-gray-400 mb-2">You send</h2>
-        <div className="flex items-center justify-between w-full py-4">
+    <div className="p-0 sm:p-4 w-full sm:w-[496px] rounded-2xl bg-[#1C243E]">
+      <div className="mb-0 bg-white border border-border rounded-[34px] bg-opacity-5 p-4">
+        <h2 className="text-base font-medium text-gray-400">You send</h2>
+        <div className="flex items-center justify-between w-full py-2 gap-6">
           <div className="flex items-center">
             <img
               src={currentSendToken.logoURI}
@@ -331,7 +331,7 @@ const SwapComponent = () => {
                 const value = e.target.value;
                 setSendAmount(value);
               }}
-              className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none text-right w-[150px]"
+              className="text-white text-2xl font-semibold bg-transparent border-none focus:outline-none text-right w-[100%]"
             />
             <p className="text-tertiary text-sm">
               ${(sendAmount * sendTokenPrice).toFixed(2)}
@@ -340,7 +340,7 @@ const SwapComponent = () => {
         </div>
       </div>
 
-      <div className="flex justify-center items-center -my-5  ">
+      <div className="flex justify-center items-center -my-5">
         <button
           onClick={() => handleChange()}
           className="w-12 z-10 h-12 shadow-gradient   font-bold text-xs bg-gradient-to-r from-gradient-start to-gradient-end rounded-full flex items-center justify-center"
@@ -349,11 +349,9 @@ const SwapComponent = () => {
         </button>
       </div>
 
-      <div className="mb-8  bg-white border border-border rounded-[34px] bg-opacity-5  p-6 ">
-        <h2 className="text-base font-medium text-gray-400 mb-2">
-          You receive
-        </h2>
-        <div className="flex items-center justify-between   py-4">
+      <div className="mb-4 bg-white border border-border rounded-[34px] bg-opacity-5 p-4">
+        <h2 className="text-base font-medium text-gray-400">You receive</h2>
+        <div className="flex items-center justify-between py-2 gap-6">
           <div className="flex items-center">
             <img
               src={currentRecieveToken.logoURI}
@@ -430,7 +428,7 @@ const SwapComponent = () => {
               value={recieveAmount.toFixed(8)}
               disabled
               onChange={(e) => setRecieveAmount(e.target.value)}
-              className="text-white md:max-w-80 text-2xl font-bold bg-transparent border-none focus:outline-none text-right w-[150px]"
+              className="text-white text-2xl font-bold bg-transparent border-none focus:outline-none text-right w-full"
             />
             <p className="text-tertiary text-sm">
               ${(recieveAmount * recieveTokenPrice).toFixed(2)}
@@ -439,7 +437,7 @@ const SwapComponent = () => {
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-4">
         <div className="flex text-xs gap-1  border-border border rounded-full items-center">
           <button
             onClick={handleCheap}
@@ -471,7 +469,7 @@ const SwapComponent = () => {
           </button>
         </div>
         <p className="text-white text-sm sm:text-base">
-          Cheap, but slow transaction
+          {tab === "cheap" ? "Cheap, but slow transaction" : "Fast transaction"}
         </p>
       </div>
 
